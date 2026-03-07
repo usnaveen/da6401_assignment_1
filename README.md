@@ -52,7 +52,3 @@ src/
 
 - **W&B Report**: [DA6401 Assignment 1 - Multi-Layer Perceptron for Image classification](https://wandb.ai/naveenus-indian-institute-of-technology-madras/da6401-assignment-1/reports/DA6401-Assignment-1-Multi-Layer-Perceptron-for-Image-classification--VmlldzoxNjExMjk2OQ?accessToken=383c75yi83u89d2ngy8vf2w5fxxnddaqgjgjc0plc5654gw4nvyrcika4kbtr5gt)
 - **GitHub Repository**: [https://github.com/usnaveen/da6401_assignment_1](https://github.com/usnaveen/da6401_assignment_1)
-
-## Contact
-
-For questions or issues, please contact the teaching staff or post on the course forum.
