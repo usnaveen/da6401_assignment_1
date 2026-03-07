@@ -6,12 +6,10 @@ class SGD:
         self.lr = lr
         self.weight_decay = weight_decay
 
-    def update(self, W, b, grad_W, grad_b):
-        grad_W += self.weight_decay * W
-        grad_b += self.weight_decay * b
-        W -= self.lr * grad_W
-        b -= self.lr * grad_b
-        return W, b
+    def update(self, W, b, grad_W, grad_b, layer_id=None):
+        gW = grad_W + self.weight_decay * W
+        gb = grad_b + self.weight_decay * b
+        return W - self.lr * gW, b - self.lr * gb
 
 
 class Momentum:
@@ -19,20 +17,17 @@ class Momentum:
         self.lr = lr
         self.beta = beta
         self.weight_decay = weight_decay
-        self.v_W = None
-        self.v_b = None
+        self.state = {}
 
-    def update(self, W, b, grad_W, grad_b):
-        if self.v_W is None:
-            self.v_W = np.zeros_like(W)
-            self.v_b = np.zeros_like(b)
-        grad_W += self.weight_decay * W
-        grad_b += self.weight_decay * b
-        self.v_W = self.beta * self.v_W - self.lr * grad_W
-        self.v_b = self.beta * self.v_b - self.lr * grad_b
-        W += self.v_W
-        b += self.v_b
-        return W, b
+    def update(self, W, b, grad_W, grad_b, layer_id):
+        if layer_id not in self.state:
+            self.state[layer_id] = {"v_W": np.zeros_like(W), "v_b": np.zeros_like(b)}
+        s = self.state[layer_id]
+        gW = grad_W + self.weight_decay * W
+        gb = grad_b + self.weight_decay * b
+        s["v_W"] = self.beta * s["v_W"] - self.lr * gW
+        s["v_b"] = self.beta * s["v_b"] - self.lr * gb
+        return W + s["v_W"], b + s["v_b"]
 
 
 class NAG:
@@ -40,22 +35,20 @@ class NAG:
         self.lr = lr
         self.beta = beta
         self.weight_decay = weight_decay
-        self.v_W = None
-        self.v_b = None
+        self.state = {}
 
-    def update(self, W, b, grad_W, grad_b):
-        if self.v_W is None:
-            self.v_W = np.zeros_like(W)
-            self.v_b = np.zeros_like(b)
-        grad_W += self.weight_decay * W
-        grad_b += self.weight_decay * b
-        # Nesterov lookahead (using current grad as approximation)
-        lookahead_grad_W = grad_W
-        lookahead_grad_b = grad_b
-        self.v_W = self.beta * self.v_W - self.lr * lookahead_grad_W
-        self.v_b = self.beta * self.v_b - self.lr * lookahead_grad_b
-        W += self.beta * self.v_W - self.lr * grad_W
-        b += self.beta * self.v_b - self.lr * grad_b
+    def update(self, W, b, grad_W, grad_b, layer_id):
+        if layer_id not in self.state:
+            self.state[layer_id] = {"v_W": np.zeros_like(W), "v_b": np.zeros_like(b)}
+        s = self.state[layer_id]
+        gW = grad_W + self.weight_decay * W
+        gb = grad_b + self.weight_decay * b
+        v_W_prev = s["v_W"].copy()
+        v_b_prev = s["v_b"].copy()
+        s["v_W"] = self.beta * s["v_W"] - self.lr * gW
+        s["v_b"] = self.beta * s["v_b"] - self.lr * gb
+        W = W - self.beta * v_W_prev + (1 + self.beta) * s["v_W"]
+        b = b - self.beta * v_b_prev + (1 + self.beta) * s["v_b"]
         return W, b
 
 
@@ -65,18 +58,16 @@ class RMSProp:
         self.beta = beta
         self.epsilon = epsilon
         self.weight_decay = weight_decay
-        self.rms_W = None
-        self.rms_b = None
+        self.state = {}
 
-    def update(self, W, b, grad_W, grad_b):
-        if self.rms_W is None:
-            self.rms_W = np.zeros_like(W)
-            self.rms_b = np.zeros_like(b)
-        grad_W += self.weight_decay * W
-        grad_b += self.weight_decay * b
-        self.rms_W = self.beta * self.rms_W + (1 - self.beta) * (grad_W**2)
-        self.rms_b = self.beta * self.rms_b + (1 - self.beta) * (grad_b**2)
-        W -= self.lr * grad_W / (np.sqrt(self.rms_W) + self.epsilon)
-        b -= self.lr * grad_b / (np.sqrt(self.rms_b) + self.epsilon)
+    def update(self, W, b, grad_W, grad_b, layer_id):
+        if layer_id not in self.state:
+            self.state[layer_id] = {"rms_W": np.zeros_like(W), "rms_b": np.zeros_like(b)}
+        s = self.state[layer_id]
+        gW = grad_W + self.weight_decay * W
+        gb = grad_b + self.weight_decay * b
+        s["rms_W"] = self.beta * s["rms_W"] + (1 - self.beta) * (gW ** 2)
+        s["rms_b"] = self.beta * s["rms_b"] + (1 - self.beta) * (gb ** 2)
+        W = W - self.lr * gW / (np.sqrt(s["rms_W"]) + self.epsilon)
+        b = b - self.lr * gb / (np.sqrt(s["rms_b"]) + self.epsilon)
         return W, b
-

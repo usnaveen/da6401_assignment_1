@@ -1,1 +1,44 @@
-/MicroGrad
+# Logs and caches
+src/wandb/
+wandb/
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment files
+src/run_env.sh
+
+# Submission artifacts (keep these tracked but ignore large temp files)
+submission_fix/
+src_autograder_fixed.zip
+src_gradescope_clean.zip
+src_gradescope_flat.zip
+
+# Assignment PDF (not part of code submission)
+*.pdf
+
+# Matplotlib / fontconfig caches
+.matplotlib/
+.fontconfig/

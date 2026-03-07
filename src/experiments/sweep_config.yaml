@@ -1,0 +1,64 @@
+# Section 2.2 — Hyperparameter Sweep
+# Usage:
+#   cd src
+#   wandb sweep experiments/sweep_config.yaml
+#   wandb agent <SWEEP_ID> --count 100
+
+program: train.py
+method: bayes
+project: da6401-assignment-1
+metric:
+  name: val_acc
+  goal: maximize
+parameters:
+  dataset:
+    value: mnist
+  epochs:
+    value: 10
+  wandb_project:
+    value: da6401-assignment-1
+  loss:
+    value: cross_entropy
+  optimizer:
+    values:
+      - sgd
+      - momentum
+      - nag
+      - rmsprop
+  learning_rate:
+    values:
+      - 0.001
+      - 0.005
+      - 0.01
+      - 0.05
+  num_layers:
+    values:
+      - 2
+      - 3
+  hidden_size:
+    values:
+      - "128,64"
+      - "128,128"
+      - "256,128"
+      - "128,128,128"
+      - "64,64,64"
+      - "256,128,64"
+  activation:
+    values:
+      - relu
+      - sigmoid
+      - tanh
+  weight_init:
+    values:
+      - random
+      - xavier
+  batch_size:
+    values:
+      - 32
+      - 64
+      - 128
+  weight_decay:
+    values:
+      - 0.0
+      - 0.0001
+      - 0.001
