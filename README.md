@@ -1,5 +1,10 @@
 # Assignment 1: Multi-Layer Perceptron for Image Classification
 
+## Student Details
+
+- **Name**: Naveen U S
+- **Roll Number**: DA25M020
+
 ## Overview
 
 Implementation of a multi-layer perceptron (MLP) neural network from scratch using only NumPy for DA6401 Deep Learning course. The network supports training on MNIST and Fashion-MNIST datasets with configurable architectures, optimizers, activations, and loss functions.
@@ -45,7 +50,7 @@ src/
 
 ## Links
 
-- **W&B Report**: [TODO: Add your W&B report link here]
+- **W&B Report**: [DA6401 Assignment 1 - Multi-Layer Perceptron for Image classification](https://wandb.ai/naveenus-indian-institute-of-technology-madras/da6401-assignment-1/reports/DA6401-Assignment-1-Multi-Layer-Perceptron-for-Image-classification--VmlldzoxNjExMjk2OQ?accessToken=383c75yi83u89d2ngy8vf2w5fxxnddaqgjgjc0plc5654gw4nvyrcika4kbtr5gt)
 - **GitHub Repository**: [https://github.com/usnaveen/da6401_assignment_1](https://github.com/usnaveen/da6401_assignment_1)
 
 ## Contact
